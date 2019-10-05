@@ -28,9 +28,11 @@ router.post("/", (req, res, next) => {
 });
 router.get("/", (req, res, next) => {
     let projectId = req.query.projectId;
-    Task.find({ projectId: projectId }, (err, data) => {
+    console.log("tasks", projectId)
+    Task.find({ projectId: projectId }, (err, docs) => {
         if (err) return res.json({ success: false, error: err });
-        return res.json({ success: true, data: data });
+        console.log(docs);
+        res.json(docs);
     });
 });
 
