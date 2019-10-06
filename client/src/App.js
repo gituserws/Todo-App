@@ -11,7 +11,9 @@ class App extends Component {
       projectName: '',
       taskContent: '',
       activeProject: 0,
-      isDone: false
+      isDone: false,
+      editableProject: "",
+      editableTask: ""
     };
   }
   componentDidMount() {
@@ -80,10 +82,18 @@ class App extends Component {
   }
   handleClick = (project, index) => {
     console.log('handleclick', project, index);
-    this.setState({ activeProject: index });
-    this.getTasks(project._id);
-  }
+    let previousIndex = this.state.activeProject;
+    this.setState({ activeProject: index }, () => {
+      if (previousIndex !== this.state.activeProject) this.getTasks(project._id);
+    });
 
+  }
+  changeEditMode = i => {
+    this.setState({ editableProject: i })
+  }
+  cancelEditMode = () => {
+    this.setState({ editableProject: "" })
+  }
   renderProjects = () => {
     if (this.state.projects) {
       //console.log('yes', this.state.projects);
@@ -91,9 +101,15 @@ class App extends Component {
         <ol>
           {this.state.projects.map((project, i) => {
             const className = this.state.activeProject === i ? 'project active' : 'project';
-            return (<div className={className} key={i} onClick={() => this.handleClick(project, i)}>
-              {project.name}
-            </div>)
+            let projectO = { id: project._id, index: i };
+            return this.state.editableProject === i ?
+              <div key={i}><input type="text" name="projectName" onChange={this.handleChange}
+                defaultValue={project.name} />
+                <button onClick={() => this.editProject(projectO)} >Edit</button><button onClick={() => this.removeProject(projectO)} >-</button></div> :
+              <div className={className} key={i} onClick={() => this.handleClick(project, i)}
+                onDoubleClick={() => this.changeEditMode(i)}>
+                {project.name}
+              </div>
           }
 
           )} </ol>
@@ -186,7 +202,38 @@ class App extends Component {
         console.log(error);
       })
   }
-
+  editProject = (project) => {
+    console.log('edit', project)
+    axios
+      .put("http://localhost:3001/api/projects/" + project.id, {
+        name: this.state.projectName
+      })
+      .then(response => {
+        console.log("response", response.data.project);
+        const projects = [...this.state.projects];
+        projects[project.index] = { ...project[project.index], name: response.data.project.name };
+        this.setState({ projects });
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+  removeProject = (project) => {
+    console.log('edit', project)
+    axios
+      .delete("http://localhost:3001/api/projects/" + project.id)
+      .then(response => {
+        console.log("response", response.data.id);
+        let projects = [...this.state.projects];
+        projects = projects.filter(function (obj) {
+          return obj._id !== project.id;
+        });
+        this.setState({ projects });
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
   handleStatusChange = (task, event) => {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -217,7 +264,7 @@ class App extends Component {
   }
   render() {
     return (
-      <div className="App">
+      <div className="App" onClick={this.cancelEditMode}>
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <div>
