@@ -10,7 +10,8 @@ class App extends Component {
       tasks: [],
       projectName: '',
       taskContent: '',
-      activeProject: 0
+      activeProject: 0,
+      isDone: false
     };
   }
   componentDidMount() {
@@ -21,14 +22,14 @@ class App extends Component {
     axios
       .get("http://localhost:3001/api/projects")
       .then(response => {
-        console.log("getproject response", response.data);
+        //console.log("getproject response", response.data);
         this.setState({ projects: response.data });
         if (response.data) {
-          console.log('response data', response.data)
+          //console.log('response data', response.data)
           axios
             .get("http://localhost:3001/api/tasks", { params: { projectId: response.data[0]._id } })
             .then(result => {
-              console.log("get first project tasks response", result.data);
+              //console.log("get first project tasks response", result.data);
               this.setState({ tasks: result.data });
             }).catch(error => {
               console.log(error);
@@ -60,8 +61,8 @@ class App extends Component {
       })
       .then(response => {
         console.log("response", response);
+        this.getTasks(projectId)
       })
-      .then(this.getTasks(projectId))
       .catch(error => {
         console.log(error);
       })
@@ -72,16 +73,17 @@ class App extends Component {
       .get("http://localhost:3001/api/tasks", { params: { projectId: projectId } })
       .then(response => {
         console.log("gettasks response", response.data);
-        this.setState({ tasks: response.data });
+        this.setState({ tasks: response.data }, () => console.log('get tasks', this.state.tasks));
       }).catch(error => {
         console.log(error);
       });
   }
   handleClick = (project, index) => {
-    //console.log('handleclick');
+    console.log('handleclick', project, index);
     this.setState({ activeProject: index });
     this.getTasks(project._id);
   }
+
   renderProjects = () => {
     if (this.state.projects) {
       //console.log('yes', this.state.projects);
@@ -98,6 +100,7 @@ class App extends Component {
       );
     }
   }
+
   renderTasks = () => {
     if (this.state.tasks) {
       console.log('yes for tasks', this.state.tasks);
@@ -111,15 +114,83 @@ class App extends Component {
             </div> : null}
           <ol>
             {this.state.tasks.map((task, i) => {
-              return (<div key={i} onClick={() => console.log("task clicked", i)}>
-                {task.content}
-              </div>)
+              let taskO = { id: task._id, index: i };
+              const className = this.state.editable === i ? 'task editable' : 'task';
+              return (task.isDone === false ? (<div key={i}><label>
+                <input
+                  name="isDone"
+                  type="checkbox"
+                  checked={false}
+                  onChange={(e) => this.handleStatusChange(taskO, e)} />
+                <input type="text" name="taskContent" className={className}
+                  defaultValue={task.content}
+                  onChange={this.handleChange} />
+              </label><button onClick={() => this.editTask(taskO)} >Edit</button></div>) : null)
+            }
+
+            )}
+          </ol>
+          <h2>Completed tasks</h2>
+          <ol>
+            {this.state.tasks.map((task, i) => {
+              let taskO = { id: task._id, index: i };
+              const className = this.state.editable === i ? 'task editable' : 'task';
+              return (task.isDone === true ? (<div key={i}><label >
+                <input
+                  name="isDone"
+                  type="checkbox"
+                  checked={true}
+                  onChange={(e) => this.handleStatusChange(taskO, e)} />
+                <input type="text" name="taskContent" className={className}
+                  defaultValue={task.content}
+                  onChange={this.handleChange} />
+              </label><button onClick={() => this.editTask(taskO)} >Edit</button></div>) : null)
             }
 
             )}
           </ol>
         </div>)
     }
+  }
+  editTask = (task) => {
+    console.log('edit', task)
+    axios
+      .put("http://localhost:3001/api/tasks/" + task.id + "/content", {
+        content: this.state.taskContent
+      })
+      .then(response => {
+        console.log("response", response.data.task);
+        const tasks = [...this.state.tasks];
+        tasks[task.index] = { ...tasks[task.index], content: response.data.task.content };
+        this.setState({ tasks });
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+
+  handleStatusChange = (task, event) => {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    }, () => {
+      axios
+        .put("http://localhost:3001/api/tasks/" + task.id + "/completed", {
+          isDone: this.state.isDone
+        })
+        .then(response => {
+          console.log("response", response.data.task.isDone);
+          const tasks = [...this.state.tasks];
+          tasks[task.index] = { ...tasks[task.index], isDone: response.data.task.isDone };
+          this.setState({ tasks });
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    });
   }
   handleChange = (e) => {
     this.setState({
