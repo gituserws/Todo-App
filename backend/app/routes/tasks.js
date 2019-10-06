@@ -81,6 +81,28 @@ router.put("/:id/content", (req, res, next) => {
         }
     );
 });
+router.delete("/:id", (req, res, next) => {
+    Task.findByIdAndRemove(req.params.id, function (err, task) {
+        console.log("task callback");
+        if (err) {
+            console.log("task find and remove err");
+            res.json({
+                success: false,
+                error: err
+            });
+        }
+        else if (task) {
+            const response = {
+                message: "task  found",
+                id: req.params.id
+            };
+            console.log("task successfully  removed", task);
+            console.log(response);
+            res.status(200).json(response);
+        }
+    }
+    );
+});
 router.get("/", (req, res, next) => {
     let projectId = req.query.projectId;
     console.log("tasks", projectId)

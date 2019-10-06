@@ -125,7 +125,8 @@ class App extends Component {
                 <input type="text" name="taskContent" className={className}
                   defaultValue={task.content}
                   onChange={this.handleChange} />
-              </label><button onClick={() => this.editTask(taskO)} >Edit</button></div>) : null)
+              </label><button onClick={() => this.editTask(taskO)} >Edit</button>
+                <button onClick={() => this.removeTask(taskO)} >-</button></div>) : null)
             }
 
             )}
@@ -144,7 +145,8 @@ class App extends Component {
                 <input type="text" name="taskContent" className={className}
                   defaultValue={task.content}
                   onChange={this.handleChange} />
-              </label><button onClick={() => this.editTask(taskO)} >Edit</button></div>) : null)
+              </label><button onClick={() => this.editTask(taskO)} >Edit</button>
+                <button onClick={() => this.removeTask(taskO)} >-</button></div>) : null)
             }
 
             )}
@@ -162,6 +164,22 @@ class App extends Component {
         console.log("response", response.data.task);
         const tasks = [...this.state.tasks];
         tasks[task.index] = { ...tasks[task.index], content: response.data.task.content };
+        this.setState({ tasks });
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+  removeTask = (task) => {
+    console.log('edit', task)
+    axios
+      .delete("http://localhost:3001/api/tasks/" + task.id)
+      .then(response => {
+        console.log("response", response.data.id);
+        let tasks = [...this.state.tasks];
+        tasks = tasks.filter(function (obj) {
+          return obj._id !== task.id;
+        });
         this.setState({ tasks });
       })
       .catch(error => {
