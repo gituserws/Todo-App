@@ -16,6 +16,12 @@ class App extends Component {
       editableTask: ""
     };
   }
+  componentWillMount() {
+    document.addEventListener("click", this.cancelEditMode, false);
+  }
+  componentWillUnmount() {
+    document.removeEventListener('click', this.cancelEditMode, false)
+  }
   componentDidMount() {
     console.log('mount')
     this.getProjects();
@@ -91,8 +97,15 @@ class App extends Component {
   changeEditMode = i => {
     this.setState({ editableProject: i })
   }
-  cancelEditMode = () => {
-    this.setState({ editableProject: "" })
+  cancelEditMode = (event) => {
+    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+      // alert('You clicked outside of me!');
+      this.setState({ editableProject: "" });
+    }
+
+  }
+  setWrapperRef = (node) => {
+    this.wrapperRef = node;
   }
   renderProjects = () => {
     if (this.state.projects) {
@@ -103,9 +116,10 @@ class App extends Component {
             const className = this.state.activeProject === i ? 'project active' : 'project';
             let projectO = { id: project._id, index: i };
             return this.state.editableProject === i ?
-              <div key={i}><input type="text" name="projectName" onChange={this.handleChange}
+              <div ref={this.setWrapperRef} key={i}><input type="text" name="projectName" onChange={this.handleChange}
                 defaultValue={project.name} />
-                <button onClick={() => this.editProject(projectO)} >Edit</button><button onClick={() => this.removeProject(projectO)} >-</button></div> :
+                <button onClick={() => this.editProject(projectO)} >Edit</button>
+                <button onClick={() => this.removeProject(projectO)} >-</button></div> :
               <div className={className} key={i} onClick={() => this.handleClick(project, i)}
                 onDoubleClick={() => this.changeEditMode(i)}>
                 {project.name}
@@ -264,7 +278,7 @@ class App extends Component {
   }
   render() {
     return (
-      <div className="App" onClick={this.cancelEditMode}>
+      <div className="App" >
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <div>
