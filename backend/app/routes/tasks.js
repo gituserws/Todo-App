@@ -4,7 +4,6 @@ const Task = require("../models/task");
 
 
 router.post("/", (req, res, next) => {
-    console.log('tasks');
     let content = req.body.content;
     let projectId = req.body.projectId;
     const task = new Task({
@@ -27,15 +26,12 @@ router.post("/", (req, res, next) => {
         });
 });
 router.put("/:id/completed", (req, res, next) => {
-    console.log("completed", req.params.id)
     Task.findOneAndUpdate(
         { _id: req.params.id },
         { isDone: req.body.isDone },
         { upsert: false, new: true },
         function (err, result) {
-            console.log("task callback");
             if (err) {
-                console.log("task find and update err");
                 res.json({
                     success: false,
                     error: err
@@ -47,7 +43,6 @@ router.put("/:id/completed", (req, res, next) => {
                     message: "task  found",
                     task: result
                 };
-                console.log("task succesfully  updated", result);
                 console.log(response);
                 res.status(200).json(response);
             }
@@ -60,9 +55,7 @@ router.put("/:id/content", (req, res, next) => {
         { content: req.body.content },
         { upsert: false, new: true },
         function (err, result) {
-            console.log("task callback");
             if (err) {
-                console.log("task find and update err");
                 res.json({
                     success: false,
                     error: err
@@ -74,8 +67,6 @@ router.put("/:id/content", (req, res, next) => {
                     message: "task  found",
                     task: result
                 };
-                console.log("task content succesfully  updated", result);
-                console.log(response);
                 res.status(200).json(response);
             }
         }
@@ -83,9 +74,7 @@ router.put("/:id/content", (req, res, next) => {
 });
 router.delete("/:id", (req, res, next) => {
     Task.findByIdAndRemove(req.params.id, function (err, task) {
-        console.log("task callback");
         if (err) {
-            console.log("task find and remove err");
             res.json({
                 success: false,
                 error: err
@@ -96,8 +85,7 @@ router.delete("/:id", (req, res, next) => {
                 message: "task  found",
                 id: req.params.id
             };
-            console.log("task successfully  removed", task);
-            console.log(response);
+
             res.status(200).json(response);
         }
     }
@@ -105,7 +93,6 @@ router.delete("/:id", (req, res, next) => {
 });
 router.get("/", (req, res, next) => {
     let projectId = req.query.projectId;
-    console.log("tasks", projectId)
     Task.find({ projectId: projectId }, (err, docs) => {
         if (err) return res.json({ success: false, error: err });
         console.log(docs);

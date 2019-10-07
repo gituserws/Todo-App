@@ -27,21 +27,17 @@ class App extends Component {
     document.removeEventListener('click', this.cancelEditMode, false)
   }
   componentDidMount() {
-    console.log('mount')
     this.getProjects();
   }
   getProjects = () => {
     axios
       .get("http://localhost:3001/api/projects")
       .then(response => {
-        //console.log("getproject response", response.data);
         this.setState({ projects: response.data });
         if (response.data) {
-          //console.log('response data', response.data)
           axios
             .get("http://localhost:3001/api/tasks", { params: { projectId: response.data[0]._id } })
             .then(result => {
-              //console.log("get first project tasks response", result.data);
               this.setState({ tasks: result.data });
             }).catch(error => {
               console.log(error);
@@ -80,18 +76,15 @@ class App extends Component {
       })
   }
   getTasks = (projectId) => {
-    console.log("gettasks", projectId);
     axios
       .get("http://localhost:3001/api/tasks", { params: { projectId: projectId } })
       .then(response => {
-        console.log("gettasks response", response.data);
         this.setState({ tasks: response.data }, () => console.log('get tasks', this.state.tasks));
       }).catch(error => {
         console.log(error);
       });
   }
   handleClick = (project, index) => {
-    console.log('handleclick', project, index);
     let previousIndex = this.state.activeProject;
     this.setState({ activeProject: index }, () => {
       if (previousIndex !== this.state.activeProject) this.getTasks(project._id);
@@ -117,7 +110,6 @@ class App extends Component {
   }
   renderProjects = () => {
     if (this.state.projects) {
-      //console.log('yes', this.state.projects);
       return (
         <div>
           <h3>Your projects</h3>
@@ -144,7 +136,6 @@ class App extends Component {
 
   renderTasks = () => {
     if (this.state.tasks) {
-      console.log('yes for tasks', this.state.tasks);
       return (
         <div>
           {this.state.projects.length > 0 ?
@@ -210,7 +201,6 @@ class App extends Component {
     }
   }
   editTask = (task) => {
-    console.log('edit', task)
     axios
       .put("http://localhost:3001/api/tasks/" + task.id + "/content", {
         content: this.state.taskContent
@@ -226,7 +216,6 @@ class App extends Component {
       })
   }
   removeTask = (task) => {
-    console.log('edit', task)
     axios
       .delete("http://localhost:3001/api/tasks/" + task.id)
       .then(response => {
@@ -242,7 +231,6 @@ class App extends Component {
       })
   }
   editProject = (project) => {
-    console.log('edit', project)
     axios
       .put("http://localhost:3001/api/projects/" + project.id, {
         name: this.state.projectName
@@ -258,7 +246,6 @@ class App extends Component {
       })
   }
   removeProject = (project) => {
-    console.log('edit', project)
     axios
       .delete("http://localhost:3001/api/projects/" + project.id)
       .then(response => {

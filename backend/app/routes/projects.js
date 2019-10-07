@@ -4,7 +4,6 @@ const Project = require("../models/project");
 
 
 router.post("/", (req, res, next) => {
-    console.log('projects');
     let name = req.body.name;
     const project = new Project({
         name: name
@@ -30,9 +29,7 @@ router.put("/:id", (req, res, next) => {
         { name: req.body.name },
         { upsert: false, new: true },
         function (err, result) {
-            console.log("project callback");
             if (err) {
-                console.log("project find and update err");
                 res.json({
                     success: false,
                     error: err
@@ -44,7 +41,6 @@ router.put("/:id", (req, res, next) => {
                     message: "project  found",
                     project: result
                 };
-                console.log("project content succesfully  updated", result);
                 console.log(response);
                 res.status(200).json(response);
             }
@@ -53,9 +49,7 @@ router.put("/:id", (req, res, next) => {
 });
 router.delete("/:id", (req, res, next) => {
     Project.findByIdAndRemove(req.params.id, function (err, project) {
-        console.log("project callback");
         if (err) {
-            console.log("project find and remove err");
             res.json({
                 success: false,
                 error: err
@@ -66,15 +60,12 @@ router.delete("/:id", (req, res, next) => {
                 message: "project  found",
                 id: req.params.id
             };
-            console.log("project successfully  removed", project);
-            console.log(response);
             res.status(200).json(response);
         }
     }
     );
 });
 router.get("/", (req, res, next) => {
-    console.log('projects')
     Project.find((err, docs) => {
         if (err) return res.json({ success: false, error: err });
         console.log("projects", docs);
