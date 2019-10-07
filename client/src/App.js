@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
-import logo from './logo.svg';
+//import logo from './logo.svg';
 import './App.css';
+import todologo from "./logo-todoapp.png";
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -111,22 +113,25 @@ class App extends Component {
     if (this.state.projects) {
       //console.log('yes', this.state.projects);
       return (
-        <ol>
-          {this.state.projects.map((project, i) => {
-            const className = this.state.activeProject === i ? 'project active' : 'project';
-            let projectO = { id: project._id, index: i };
-            return this.state.editableProject === i ?
-              <div ref={this.setWrapperRef} key={i}><input type="text" name="projectName" onChange={this.handleChange}
-                defaultValue={project.name} />
-                <button onClick={() => this.editProject(projectO)} >Edit</button>
-                <button onClick={() => this.removeProject(projectO)} >-</button></div> :
-              <div className={className} key={i} onClick={() => this.handleClick(project, i)}
-                onDoubleClick={() => this.changeEditMode(i)}>
-                {project.name}
-              </div>
-          }
+        <div>
+          <h3>Your projects</h3>
+          <ol>
+            {this.state.projects.map((project, i) => {
+              const className = this.state.activeProject === i ? 'project active' : 'project';
+              let projectO = { id: project._id, index: i };
+              return this.state.editableProject === i ?
+                <div ref={this.setWrapperRef} key={i}><input type="text" name="projectName"
+                  onChange={this.handleChange}
+                  defaultValue={project.name} />
+                  <button onClick={() => this.editProject(projectO)} >Edit</button>
+                  <button onClick={() => this.removeProject(projectO)} >-</button></div> :
+                <div className={className} key={i} onClick={() => this.handleClick(project, i)}
+                  onDoubleClick={() => this.changeEditMode(i)}>
+                  {project.name}
+                </div>
+            }
 
-          )} </ol>
+            )} </ol></div>
       );
     }
   }
@@ -142,6 +147,7 @@ class App extends Component {
                 onChange={this.handleChange} />
               <button onClick={() => this.addTask(this.state.projects[this.state.activeProject]._id)} >Create</button>
             </div> : null}
+          <h2>In progress</h2>
           <ol>
             {this.state.tasks.map((task, i) => {
               let taskO = { id: task._id, index: i };
@@ -161,7 +167,7 @@ class App extends Component {
 
             )}
           </ol>
-          <h2>Completed tasks</h2>
+          <h2>Done</h2>
           <ol>
             {this.state.tasks.map((task, i) => {
               let taskO = { id: task._id, index: i };
@@ -174,7 +180,8 @@ class App extends Component {
                   onChange={(e) => this.handleStatusChange(taskO, e)} />
                 <input type="text" name="taskContent" className={className}
                   defaultValue={task.content}
-                  onChange={this.handleChange} />
+                  onChange={this.handleChange}
+                  style={{ textDecoration: true ? "line-through" : "" }} />
               </label><button onClick={() => this.editTask(taskO)} >Edit</button>
                 <button onClick={() => this.removeTask(taskO)} >-</button></div>) : null)
             }
@@ -280,50 +287,25 @@ class App extends Component {
     return (
       <div className="App" >
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <div>
-            <input type="text" value={this.state.projectName} name="projectName"
-              onChange={this.handleChange} />
-            <button onClick={this.addProject} >Create</button>
+          <img src={todologo} className="App-logo" alt="logo" />
+          <div className='rows'>
+            <div className='row'>
+              <input type="text" value={this.state.projectName} name="projectName"
+                onChange={this.handleChange} />
+              <button onClick={this.addProject} >Create</button>
+              {this.renderProjects()}
+            </div>
+            <div className='row'>
+              {this.renderTasks()}
+            </div>
           </div>
-          {this.renderProjects()}
-          {this.renderTasks()}
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-        </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-        </a>
+
+
         </header>
       </div>
     );
   }
 }
 
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
 
 export default App;

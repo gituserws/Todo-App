@@ -3,18 +3,19 @@
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 4vmin;
 }
 
 .App-header {
-  background-color: #282c34;
+  /* background-color: #282c34; */
+  background-color: white;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: black;
 }
 
 .App-link {
@@ -22,5 +23,8 @@
 }
 
 .active {
-  background-color: #fff500
+ color: #09d3ac
+}
+.rows .row {
+  display: inline-block;
 }
