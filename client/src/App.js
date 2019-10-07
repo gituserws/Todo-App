@@ -15,7 +15,9 @@ class App extends Component {
       activeProject: 0,
       isDone: false,
       editableProject: "",
-      editableTask: ""
+      editableTask: "",
+      createProject: false,
+      createTask: false
     };
   }
   componentWillMount() {
@@ -96,16 +98,20 @@ class App extends Component {
     });
 
   }
-  changeEditMode = i => {
-    this.setState({ editableProject: i })
+  changeEditMode = (project, i) => {
+    if (project === true)
+      this.setState({ editableProject: i })
+    else
+      this.setState({ editableTask: i })
   }
   cancelEditMode = (event) => {
     if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
       // alert('You clicked outside of me!');
-      this.setState({ editableProject: "" });
+      this.setState({ editableProject: "", editableTask: "" });
     }
 
   }
+
   setWrapperRef = (node) => {
     this.wrapperRef = node;
   }
@@ -126,7 +132,7 @@ class App extends Component {
                   <button onClick={() => this.editProject(projectO)} >Edit</button>
                   <button onClick={() => this.removeProject(projectO)} >-</button></div> :
                 <div className={className} key={i} onClick={() => this.handleClick(project, i)}
-                  onDoubleClick={() => this.changeEditMode(i)}>
+                  onDoubleClick={() => this.changeEditMode(true, i)}>
                   {project.name}
                 </div>
             }
@@ -142,27 +148,33 @@ class App extends Component {
       return (
         <div>
           {this.state.projects.length > 0 ?
-            <div>
+            <div>{this.state.createTask ? <div>
               <input type="text" value={this.state.taskContent} name="taskContent"
                 onChange={this.handleChange} />
               <button onClick={() => this.addTask(this.state.projects[this.state.activeProject]._id)} >Create</button>
+            </div> : <button className='large' onClick={this.handleCreateTask}>Create Task</button>}
             </div> : null}
           <h2>In progress</h2>
           <ol>
             {this.state.tasks.map((task, i) => {
               let taskO = { id: task._id, index: i };
-              const className = this.state.editable === i ? 'task editable' : 'task';
-              return (task.isDone === false ? (<div key={i}><label>
-                <input
-                  name="isDone"
-                  type="checkbox"
-                  checked={false}
-                  onChange={(e) => this.handleStatusChange(taskO, e)} />
-                <input type="text" name="taskContent" className={className}
-                  defaultValue={task.content}
-                  onChange={this.handleChange} />
-              </label><button onClick={() => this.editTask(taskO)} >Edit</button>
-                <button onClick={() => this.removeTask(taskO)} >-</button></div>) : null)
+              const className = this.state.editable === i ? 'editable' : '';
+              return (task.isDone === false ?
+                <div key={i} className="task">
+                  <label for="checkid1" />
+                  <input
+                    id="checkid1"
+                    name="isDone"
+                    type="checkbox"
+                    checked={false}
+                    onChange={(e) => this.handleStatusChange(taskO, e)} />
+                  <input type="text"
+                    id="checkid1"
+                    name="taskContent" className={className}
+                    defaultValue={task.content}
+                    onChange={this.handleChange} />
+                  <button className="medium" onClick={() => this.editTask(taskO)} >Edit</button>
+                  <button className="small" onClick={() => this.removeTask(taskO)} >-</button></div> : null)
             }
 
             )}
@@ -171,19 +183,25 @@ class App extends Component {
           <ol>
             {this.state.tasks.map((task, i) => {
               let taskO = { id: task._id, index: i };
-              const className = this.state.editable === i ? 'task editable' : 'task';
-              return (task.isDone === true ? (<div key={i}><label >
-                <input
-                  name="isDone"
-                  type="checkbox"
-                  checked={true}
-                  onChange={(e) => this.handleStatusChange(taskO, e)} />
-                <input type="text" name="taskContent" className={className}
-                  defaultValue={task.content}
-                  onChange={this.handleChange}
-                  style={{ textDecoration: true ? "line-through" : "" }} />
-              </label><button onClick={() => this.editTask(taskO)} >Edit</button>
-                <button onClick={() => this.removeTask(taskO)} >-</button></div>) : null)
+              const className = this.state.editable === i ? 'editable' : '';
+              return (task.isDone === true ? (
+                <div key={i} className="task">
+                  <label for="checkid" />
+                  <input
+                    name="isDone"
+                    type="checkbox"
+                    id="checkid"
+                    checked={true}
+                    onChange={(e) => this.handleStatusChange(taskO, e)} />
+                  <input type="text"
+                    id="checkid"
+                    name="taskContent" className={className}
+                    defaultValue={task.content}
+                    onChange={this.handleChange}
+                    style={{ textDecoration: true ? "line-through" : "" }} />
+                  <button className="medium" onClick={() => this.editTask(taskO)} >Edit</button>
+                  <button className="small" onClick={() => this.removeTask(taskO)} >-</button>
+                </div>) : null)
             }
 
             )}
@@ -283,19 +301,29 @@ class App extends Component {
       [e.target.name]: e.target.value // the value of the text input
     });
   }
+  handleCreateProject = () => {
+    this.setState({ createProject: !this.state.createProject })
+  }
+  handleCreateTask = () => {
+    this.setState({ createTask: !this.state.createTask })
+  }
   render() {
     return (
       <div className="App" >
         <header className="App-header">
           <img src={todologo} className="App-logo" alt="logo" />
           <div className='rows'>
-            <div className='row'>
-              <input type="text" value={this.state.projectName} name="projectName"
-                onChange={this.handleChange} />
-              <button onClick={this.addProject} >Create</button>
+            <div className='row projectList'>
+              {this.state.createProject ?
+                <div>
+                  <input type="text" value={this.state.projectName} name="projectName"
+                    onChange={this.handleChange} />
+                  <button onClick={this.addProject}>Create</button>
+                </div> :
+                <button className="vlarge" onClick={this.handleCreateProject}>Create Project</button>}
               {this.renderProjects()}
             </div>
-            <div className='row'>
+            <div className='row taskList'>
               {this.renderTasks()}
             </div>
           </div>

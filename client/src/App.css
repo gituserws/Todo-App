@@ -1,19 +1,20 @@
-.App {
+/* .App {
   text-align: center;
-}
+} */
 
 .App-logo {
   height: 4vmin;
+  /* align-self: start; */
 }
 
 .App-header {
   /* background-color: #282c34; */
   background-color: white;
   min-height: 100vh;
-  display: flex;
+  display: block;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+   /* align-items: start; 
+  justify-content: start; */
   font-size: calc(10px + 2vmin);
   color: black;
 }
@@ -23,8 +24,98 @@
 }
 
 .active {
- color: #09d3ac
+ color: #09d3ac;
+ background-color: #e6faf6
+ ;
 }
 .rows .row {
   display: inline-block;
+}
+.projectList{
+  width: 30%;
+ 
+}
+.taskList{
+  width: 70%;
+}
+input {
+  /* display: block; */
+  display: inline-block;
+  vertical-align: middle;
+  width: 20%;
+  font-size: 20px;
+  /* padding: 5px 10px;
+  margin: 0 0; */
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  /* background-color: #09d3ac; */
+}
+/* input[type="checkbox"]  {
+  background-color:#0b0095;
+  color:#FFF;
+  white-space: nowrap;
+} */
+button {
+  display: block;
+  width: 20%;
+  appearance: none;
+  border-radius: 5px;
+  background-color: #84c00c;
+  color: #fff;
+  border: none;
+  font-size: 16px;
+  height: 30px;
+  margin-top: 20px;
+}
+button:hover {
+  background-color: #669509;
+}
+button.small {
+  display: inline-block;
+  width: auto;
+  padding: 0 15px;
+  background-color: #777;
+  font-size: 14px;
+  margin-left: 5px;
+}
+button.medium {
+  display: inline-block;
+  width: auto;
+  padding: 0 10px;
+  background-color: #d3ac09;
+  font-size: 14px;
+  margin-left: 10px;
+}
+button.large {
+  display: inline-block;
+  width: auto;
+  vertical-align: stretch;
+  padding: 0 10px;
+  background-color: #84c00c;
+  font-size: 14px;
+  margin-left: 10px;
+}
+button.vlarge {
+  display: inline-block;
+  width: 300px;
+  padding: 0 10px;
+  background-color: white;
+  font-size: 14px;
+  margin-left: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  color:black;
+
+}
+/* .task {
+  display: flex;
+  direction: row;
+  align-self: flex-start;
+  background-color: #669509
+} */
+label{
+  display: inline-block;
+  vertical-align: middle;
+  align-items: start;
+  justify-content: start
 }
