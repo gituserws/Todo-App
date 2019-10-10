@@ -96,6 +96,18 @@ margin-left: 20px;
 color:white;
   /* vertical-align: middle; */
 }
+p.project-block-0{
+  background-color: red;
+}
+p.project-block-1{
+  background-color: pink;
+}
+p.project-block-2{
+  background-color: yellow;
+}
+p.project-block-3{
+  background-color: coral;
+}
 /* .task-container{
   background-color: #669509
 } */

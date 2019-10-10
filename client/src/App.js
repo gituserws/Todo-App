@@ -116,6 +116,7 @@ class App extends Component {
           <div className="project-container">
             {this.state.projects.map((project, i) => {
               const className = this.state.activeProject === i ? 'project active' : 'project';
+              const projectBlockClassName = "project-block " + "project-block-" + i % 4;
               let projectO = { id: project._id, index: i };
               return this.state.editableProject === i ?
                 <div ref={this.setWrapperRef} key={i}>
@@ -126,7 +127,7 @@ class App extends Component {
                   <button className="delete-button" onClick={() => this.removeProject(projectO)} >-</button></div> :
                 <div className={className} key={i} onClick={() => this.handleClick(project, i)}
                   onDoubleClick={() => this.changeEditMode(true, i)}>
-                  <p className="project-block">P{i + 1}</p>
+                  <p className={projectBlockClassName}>P{i + 1}</p>
                   {project.name}
                 </div>
             }
