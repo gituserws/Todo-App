@@ -113,7 +113,7 @@ class App extends Component {
       return (
         <div>
           <p className="project-title">Your projects</p>
-          <ol>
+          <div className="project-container">
             {this.state.projects.map((project, i) => {
               const className = this.state.activeProject === i ? 'project active' : 'project';
               let projectO = { id: project._id, index: i };
@@ -131,7 +131,7 @@ class App extends Component {
                 </div>
             }
 
-            )} </ol></div>
+            )} </div></div>
       );
     }
   }

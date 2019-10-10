@@ -92,6 +92,7 @@ p.project-block{
   text-align: center;
   vertical-align: middle;
 margin-right: 20px;
+margin-left: 20px;
 color:white;
   /* vertical-align: middle; */
 }
@@ -177,8 +178,8 @@ input[type="checkbox"]{
 
 .active {
  color: #09d3ac;
- background-color: #e6faf6
- ;
+ background-color: #e6faf6;
+ border-left: 2px solid blue;
 }
 
 input {
