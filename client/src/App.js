@@ -142,7 +142,8 @@ class App extends Component {
       return (
         <div className="task-container">
           <div className="in-progress-container">
-            <p className="status-title">In progress</p>
+            <p className="status-title">In progress ({this.state.tasks.filter(task => task.isDone === false).length})
+            </p>
             <div>
               <div className="task-first-row">TASK</div>
               {this.state.tasks.map((task, i) => {
@@ -175,7 +176,8 @@ class App extends Component {
             </div>
           </div>
           <div className="done-container">
-            <p className="status-title">Done</p>
+            <p className="status-title">Done ({this.state.tasks.filter(task => task.isDone === true).length})
+            </p>
             <div>
               <div className="task-first-row">TASK</div>
               {this.state.tasks.map((task, i) => {
